@@ -21,25 +21,6 @@ class UserService {
     }
   }
 
-  // async fetchAllUsers(page, pageSize, filter, filterFields, include, next) {
-  //   try {
-  //     const allUsers = await getPaginatedResult({
-  //       Model: User,
-  //       filter,
-  //       filterFields,
-  //       include,
-  //       page,
-  //       pageSize,
-  //     });
-
-  //     // const allUsers = await User.findAll({});
-  //     return allUsers;
-  //   } catch (error) {
-  //     console.log({ error });
-  //     next(error);
-  //   }
-  // }
-
   async fetchAllUsers({
     page,
     pageSize,
