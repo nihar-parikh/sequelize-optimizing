@@ -20,7 +20,6 @@ exports.getAllUsers = asyncWrapper(async (req, res, next) => {
     filter,
     filterFields,
     search,
-    next,
   });
 
   return res.status(200).json({

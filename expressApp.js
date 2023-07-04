@@ -1,8 +1,8 @@
 const { json, urlencoded } = require("express");
 const cors = require("cors");
 const { initRoutes } = require("./initRoutes.js");
-const { CustomError } = require("./utils/CustomError.js");
-const { globalErrorHandler } = require("./utils/globalErrorHandler.js");
+const errorHandlingMiddleware = require("./middlewares/errorHandling");
+const InvalidPathError = require("./errors/invalid-path-error.js");
 
 const expressApp = async (app) => {
   app.use(json({ limit: "1mb" }));
@@ -12,24 +12,14 @@ const expressApp = async (app) => {
   //-------------initialize all routes-------------//
   initRoutes(app);
 
-  //--------------For invalid route--------//
+  //--------------For invalid routes--------//
   //--------------Always at the end of all routes defined--------//
   app.use("*", (req, res, next) => {
-    const error = new CustomError(
-      `Can't find ${req.originalUrl} on the server`,
-      404
-    );
-    next(error); //if passed any arguments in next() then it will bypass all middleware and goes to error middleware.
+    throw new InvalidPathError(`Can't find ${req.originalUrl} on the server`);
   });
 
-  //--------------error handling--------//
-  // app.use(ErrorHandler);
-
-  //replacing the above function into global function/handler/controller/middleware
-  app.use(globalErrorHandler);
-
-  //--------------error handling--------//
-  //   app.use(ErrorHandler);
+  //--------------error handling-------------//
+  errorHandlingMiddleware(app);
 };
 
 module.exports = { expressApp };

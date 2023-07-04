@@ -8,7 +8,7 @@ const userService = new UserService();
 exports.getUserById = asyncWrapper(async (req, res, next) => {
   const { [USER_ID]: userId } = req.params;
 
-  const user = await userService.fetchUserById(userId, next);
+  const user = await userService.fetchUserById(userId);
   if (user) {
     return res.status(200).json({
       status: "success",
