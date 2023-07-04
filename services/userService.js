@@ -2,6 +2,7 @@ const { USER_MODEL_KEYWORDS } = require("../shared/modelKeywords");
 const { FIRST_NAME, LAST_NAME, EMAIL } = USER_MODEL_KEYWORDS;
 const db = require("../models");
 const { getPaginatedResult } = require("../utils/getPaginatedResult");
+const { NotFoundError } = require("../errors");
 const { User } = db;
 
 class UserService {
