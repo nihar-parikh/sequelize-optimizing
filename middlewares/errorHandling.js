@@ -1,168 +1,3 @@
-// // const logger = require('../utils/logger.js')
-// const {
-//   ValidationError,
-//   AuthenticationError,
-//   AccessDeniedError,
-//   NotFoundError,
-//   ConflictError,
-//   InvalidPathError,
-// } = require("../errors");
-// const RequestValidationError = require("../errors/request-validation-error");
-// const SchemaValidationError = require("../errors/schema-validation-error");
-
-// // function errorLogger (err, req, res, next) {
-// //   if (process.env.NODE_ENV !== 'production') {
-// //     logger.error(err.stack)
-// //   }
-// //   logger.error(err.message)
-// //   next(err)
-// // }
-
-// function authenticationErrorHandler(err, req, res, next) {
-//   console.log("authenticationErrorHandler");
-//   if (err instanceof AuthenticationError) {
-//     return res.status(401).send({
-//       error: {
-//         message: err.message,
-//         errorType: err.errorType,
-//       },
-//     });
-//   }
-//   next(err);
-// }
-
-// function notFoundErrorHandler(err, req, res, next) {
-//   console.log("notFoundErrorHandler");
-//   if (err instanceof NotFoundError) {
-//     return res.status(404).send({
-//       error: {
-//         message: err.message,
-//         errorType: err.errorType,
-//       },
-//     });
-//   }
-//   next(err);
-// }
-// function conflictErrorHandler(err, req, res, next) {
-//   console.log("conflictErrorHandler");
-//   if (err instanceof ConflictError) {
-//     return res.status(409).send({
-//       error: {
-//         message: err.message,
-//         errorType: err.errorType,
-//       },
-//     });
-//   }
-//   next(err);
-// }
-
-// function validationErrorHandler(err, req, res, next) {
-//   console.log("validationErrorHandler");
-//   if (err instanceof ValidationError) {
-//     return res.status(400).send({
-//       error: {
-//         message: err.message,
-//         errorType: err.errorType,
-//       },
-//     });
-//   }
-//   next(err);
-// }
-
-// function accessDeniedErrorHandler(err, req, res, next) {
-//   console.log("accessDeniedErrorHandler");
-//   if (err instanceof AccessDeniedError) {
-//     return res.status(403).send({
-//       error: {
-//         message: err.message,
-//         errorType: err.errorType,
-//       },
-//     });
-//   }
-//   next(err);
-// }
-
-// function invalidPathErrorHandler(err, req, res, next) {
-//   console.log("invalidPathErrorHandler");
-//   if (err instanceof InvalidPathError) {
-//     return res.status(404).send({
-//       error: {
-//         message: err.message,
-//         errorType: err.errorType,
-//       },
-//     });
-//   }
-//   next(err);
-// }
-
-// function schemaValidationErrorHandler(err, req, res, next) {
-//   console.log("sequelizeValidationErrorHandler");
-
-//   if (err instanceof RequestValidationError) {
-//     return res.status(400).json({
-//       error: {
-//         message: err.message,
-//         errorType: err.errorType,
-//       },
-//     });
-//   }
-
-//   switch (err.name) {
-//     case "SequelizeValidationError":
-//       err = schemaErrorHandler(err);
-//       break;
-//     case "SequelizeUniqueConstraintError":
-//       err = duplicateKeyErrorHandler(err);
-//       break;
-//   }
-
-//   res.status(400).json({
-//     error: {
-//       message: err.message,
-//       errorType: "SCHEMA_VALIDATION_ERROR",
-//     },
-//   });
-//   next();
-// }
-
-// function genericErrorHandler(err, req, res, next) {
-//   console.log("genericErrorHandler");
-//   res.status(500).send({
-//     error: {
-//       message: "Something went wrong with a server",
-//       errorType: "SERVER_ERROR",
-//     },
-//   });
-//   next();
-// }
-
-// const duplicateKeyErrorHandler = (error) => {
-//   const errors = Object.values(error.errors).map((value) => value.message);
-//   const errorMessages = errors.join(". ");
-//   return new SchemaValidationError(errorMessages);
-// };
-
-// const schemaErrorHandler = (error) => {
-//   const errors = Object.values(error.errors).map((value) => value.message);
-//   const errorMessages = errors.join(". ");
-//   const errorMessage = `Invalid input data: ${errorMessages}`;
-//   return new SchemaValidationError(errorMessage);
-// };
-
-// module.exports = function ErrorHandlingMiddleware(app) {
-//   app.use([
-//     // errorLogger,
-//     authenticationErrorHandler,
-//     conflictErrorHandler,
-//     validationErrorHandler,
-//     notFoundErrorHandler,
-//     accessDeniedErrorHandler,
-//     invalidPathErrorHandler,
-//     schemaValidationErrorHandler,
-//     genericErrorHandler,
-//   ]);
-// };
-
 const {
   ValidationError,
   AuthenticationError,
@@ -174,76 +9,84 @@ const {
 const RequestValidationError = require("../errors/request-validation-error");
 const SchemaValidationError = require("../errors/schema-validation-error");
 
-function handleErrorResponse(res, err, statusCode, errorType) {
-  const { message } = err;
+const handleErrorResponse = (res, error, statusCode, errorType) => {
+  const { message } = error;
   res.status(statusCode).json({
     error: {
       message,
       errorType,
     },
   });
-}
+};
 
-function authenticationErrorHandler(err, req, res, next) {
-  if (err instanceof AuthenticationError) {
-    return handleErrorResponse(res, err, 401, err.errorType);
+const authenticationErrorHandler = (error, req, res, next) => {
+  console.log("authenticationErrorHandler");
+  if (error instanceof AuthenticationError) {
+    return handleErrorResponse(res, error, 401, error.errorType);
   }
-  next(err);
-}
+  next(error);
+};
 
-function notFoundErrorHandler(err, req, res, next) {
-  if (err instanceof NotFoundError) {
-    return handleErrorResponse(res, err, 404, err.errorType);
+const notFoundErrorHandler = (error, req, res, next) => {
+  console.log("notFoundErrorHandler");
+  if (error instanceof NotFoundError) {
+    return handleErrorResponse(res, error, 404, error.errorType);
   }
-  next(err);
-}
+  next(error);
+};
 
-function conflictErrorHandler(err, req, res, next) {
-  if (err instanceof ConflictError) {
-    return handleErrorResponse(res, err, 409, err.errorType);
+const conflictErrorHandler = (error, req, res, next) => {
+  console.log("conflictErrorHandler");
+  if (error instanceof ConflictError) {
+    return handleErrorResponse(res, error, 409, error.errorType);
   }
-  next(err);
-}
+  next(error);
+};
 
-function validationErrorHandler(err, req, res, next) {
-  if (err instanceof ValidationError) {
-    return handleErrorResponse(res, err, 400, err.errorType);
+const validationErrorHandler = (error, req, res, next) => {
+  console.log("validationErrorHandler");
+  if (error instanceof ValidationError) {
+    return handleErrorResponse(res, error, 400, error.errorType);
   }
-  next(err);
-}
+  next(error);
+};
 
-function accessDeniedErrorHandler(err, req, res, next) {
-  if (err instanceof AccessDeniedError) {
-    return handleErrorResponse(res, err, 403, err.errorType);
+const accessDeniedErrorHandler = (error, req, res, next) => {
+  console.log("accessDeniedErrorHandler");
+  if (error instanceof AccessDeniedError) {
+    return handleErrorResponse(res, error, 403, error.errorType);
   }
-  next(err);
-}
+  next(error);
+};
 
-function invalidPathErrorHandler(err, req, res, next) {
-  if (err instanceof InvalidPathError) {
-    return handleErrorResponse(res, err, 404, err.errorType);
+const invalidPathErrorHandler = (error, req, res, next) => {
+  console.log("invalidPathErrorHandler");
+  if (error instanceof InvalidPathError) {
+    return handleErrorResponse(res, error, 404, error.errorType);
   }
-  next(err);
-}
+  next(error);
+};
 
-function schemaValidationErrorHandler(err, req, res, next) {
-  if (err instanceof RequestValidationError) {
-    return handleErrorResponse(res, err, 400, err.errorType);
+const schemaValidationErrorHandler = (error, req, res, next) => {
+  console.log("schemaValidationErrorHandler");
+  if (error instanceof RequestValidationError) {
+    return handleErrorResponse(res, error, 400, error.errorType);
   }
 
-  switch (err.name) {
+  switch (error.name) {
     case "SequelizeValidationError":
-      err = schemaErrorHandler(err);
+      error = schemaErrorHandler(error);
       break;
     case "SequelizeUniqueConstraintError":
-      err = duplicateKeyErrorHandler(err);
+      error = duplicateKeyErrorHandler(error);
       break;
   }
 
-  handleErrorResponse(res, err, 400, "SCHEMA_VALIDATION_ERROR");
-}
+  handleErrorResponse(res, error, 400, "SCHEMA_VALIDATION_ERROR");
+};
 
-function genericErrorHandler(err, req, res, next) {
+const genericErrorHandler = (error, req, res, next) => {
+  console.log("genericErrorHandler");
   res.status(500).send({
     error: {
       message: "Something went wrong with the server",
@@ -251,22 +94,24 @@ function genericErrorHandler(err, req, res, next) {
     },
   });
   next();
-}
+};
 
 const duplicateKeyErrorHandler = (error) => {
+  console.log("duplicateKeyErrorHandler");
   const errors = Object.values(error.errors).map((value) => value.message);
   const errorMessages = errors.join(". ");
   return new SchemaValidationError(errorMessages);
 };
 
 const schemaErrorHandler = (error) => {
+  console.log("schemaErrorHandler");
   const errors = Object.values(error.errors).map((value) => value.message);
   const errorMessages = errors.join(". ");
   const errorMessage = `Invalid input data: ${errorMessages}`;
   return new SchemaValidationError(errorMessage);
 };
 
-module.exports = function ErrorHandlingMiddleware(app) {
+module.exports = (app) => {
   app.use([
     authenticationErrorHandler,
     conflictErrorHandler,
