@@ -1,9 +1,14 @@
+const {
+  requestValidationHandler,
+} = require("../../middlewares/requestValidationHandler.js");
 const { UserService } = require("../../services/userService.js");
 const { asyncWrapper } = require("../../utils/asyncWrapper.js");
 
 const userService = new UserService();
 
 exports.getAllUsers = asyncWrapper(async (req, res, next) => {
+  requestValidationHandler(req);
+
   let { page, pageSize, filter, filterFields, search } = req.body;
   page = page ? page : 1;
   pageSize = pageSize ? pageSize : 10;

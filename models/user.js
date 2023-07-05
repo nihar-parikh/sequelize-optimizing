@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notEmpty: true,
-          len: [1, 255],
+          len: [2, 50],
         },
       },
       [LAST_NAME]: {
@@ -65,7 +65,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notEmpty: true,
-          len: [1, 255],
+          len: [2, 50],
         },
       },
       [EMAIL]: {
