@@ -4,8 +4,10 @@ const { v4: uuidv4 } = require("uuid");
 const {
   IMAGE_MODEL_KEYWORDS,
   USER_MODEL_KEYWORDS,
+  COMMENT_MODEL_KEYWORDS,
 } = require("../shared/modelKeywords");
 const { MODEL_NAME, ID, TITLE, URL, USER_ID } = IMAGE_MODEL_KEYWORDS;
+const { COMMENTABLE_ID, COMMENTABLE_TYPE } = COMMENT_MODEL_KEYWORDS;
 
 module.exports = (sequelize, DataTypes) => {
   class Image extends Model {
@@ -13,6 +15,15 @@ module.exports = (sequelize, DataTypes) => {
       Image.belongsTo(models.User, {
         foreignKey: USER_ID,
         as: "user",
+      });
+      Image.hasMany(models.Comment, {
+        foreignKey: COMMENTABLE_ID, //necessary otherwise imageId column will be created.
+        constraints: false, //necessary if two or more foreign keys refers are in same table.
+        scope: {
+          //providing scope here eliminates where clause
+          [COMMENTABLE_TYPE]: "image",
+        },
+        as: "comments",
       });
     }
   }
