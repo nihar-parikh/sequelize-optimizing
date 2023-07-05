@@ -3,20 +3,20 @@ const { TITLE, URL, USER_ID } = IMAGE_MODEL_KEYWORDS;
 const db = require("../models");
 const { getPaginatedResult } = require("../utils/getPaginatedResult");
 const { NotFoundError } = require("../errors");
-const { Image, User } = db;
+const { Video, User } = db;
 
-class ImageService {
-  async addImage(imageInputs) {
-    const { title, url, userId } = imageInputs;
-    const newImage = await Image.create({
+class VideoService {
+  async addVideo(videoInputs) {
+    const { title, url, userId } = videoInputs;
+    const newVideo = await Video.create({
       [TITLE]: title,
       [URL]: url,
       [USER_ID]: userId,
     });
-    return newImage;
+    return newVideo;
   }
 
-  async fetchAllImages({
+  async fetchAllVideos({
     page,
     pageSize,
     include,
@@ -31,7 +31,7 @@ class ImageService {
       },
     ];
     return getPaginatedResult({
-      Model: Image,
+      Model: Video,
       filter,
       filterFields,
       include,
@@ -42,4 +42,4 @@ class ImageService {
   }
 }
 
-module.exports = { ImageService };
+module.exports = { VideoService };

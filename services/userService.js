@@ -3,7 +3,7 @@ const { FIRST_NAME, LAST_NAME, EMAIL } = USER_MODEL_KEYWORDS;
 const db = require("../models");
 const { getPaginatedResult } = require("../utils/getPaginatedResult");
 const { NotFoundError } = require("../errors");
-const { User, Image } = db;
+const { User, Image, Video } = db;
 
 class UserService {
   async addUser(userInputs) {
@@ -24,6 +24,16 @@ class UserService {
     filterFields,
     search,
   }) {
+    include = [
+      {
+        model: Image,
+        as: "images",
+      },
+      {
+        model: Video,
+        as: "videos",
+      },
+    ];
     return getPaginatedResult({
       Model: User,
       filter,
@@ -44,6 +54,10 @@ class UserService {
         {
           model: Image,
           as: "images",
+        },
+        {
+          model: Video,
+          as: "videos",
         },
       ],
     });
