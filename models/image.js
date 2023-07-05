@@ -2,22 +2,22 @@
 const { Model } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
 const {
-  USER_MODEL_KEYWORDS,
   IMAGE_MODEL_KEYWORDS,
+  USER_MODEL_KEYWORDS,
 } = require("../shared/modelKeywords");
-const { MODEL_NAME, ID, FIRST_NAME, LAST_NAME, EMAIL } = USER_MODEL_KEYWORDS;
+const { MODEL_NAME, ID, TITLE, URL, USER_ID } = IMAGE_MODEL_KEYWORDS;
 
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
+  class Image extends Model {
     static associate(models) {
-      User.hasMany(models.Image, {
-        foreignKey: IMAGE_MODEL_KEYWORDS.USER_ID,
-        as: "images",
+      Image.belongsTo(models.User, {
+        foreignKey: USER_ID,
+        as: "user",
       });
     }
   }
 
-  User.init(
+  Image.init(
     {
       [ID]: {
         type: DataTypes.UUID,
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: () => uuidv4(),
         allowNull: false,
       },
-      [FIRST_NAME]: {
+      [TITLE]: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
@@ -33,21 +33,16 @@ module.exports = (sequelize, DataTypes) => {
           len: [2, 50],
         },
       },
-      [LAST_NAME]: {
+      [URL]: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-          notEmpty: true,
-          len: [2, 50],
-        },
       },
-      [EMAIL]: {
-        type: DataTypes.STRING,
+      [USER_ID]: {
+        type: DataTypes.UUID,
         allowNull: false,
-        unique: true,
-        validate: {
-          notEmpty: true,
-          isEmail: true,
+        references: {
+          model: USER_MODEL_KEYWORDS.MODEL_NAME,
+          key: "id",
         },
       },
     },
@@ -57,5 +52,5 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  return User;
+  return Image;
 };

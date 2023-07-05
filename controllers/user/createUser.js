@@ -17,10 +17,7 @@ exports.createUser = asyncWrapper(async (req, res, next) => {
     [EMAIL]: email,
   } = req.body;
 
-  const newUser = await userService.addUser(
-    { firstName, lastName, email },
-    next
-  );
+  const newUser = await userService.addUser({ firstName, lastName, email });
   if (newUser) {
     return res.status(200).json({
       status: "success",

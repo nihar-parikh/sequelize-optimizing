@@ -3,10 +3,10 @@ const { FIRST_NAME, LAST_NAME, EMAIL } = USER_MODEL_KEYWORDS;
 const db = require("../models");
 const { getPaginatedResult } = require("../utils/getPaginatedResult");
 const { NotFoundError } = require("../errors");
-const { User } = db;
+const { User, Image } = db;
 
 class UserService {
-  async addUser(userInputs, next) {
+  async addUser(userInputs) {
     const { firstName, lastName, email } = userInputs;
     const newUser = await User.create({
       [FIRST_NAME]: firstName,
@@ -40,6 +40,12 @@ class UserService {
       where: {
         id: userId,
       },
+      include: [
+        {
+          model: Image,
+          as: "images",
+        },
+      ],
     });
     if (!user) {
       throw new NotFoundError("User not found");
