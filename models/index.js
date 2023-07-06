@@ -44,6 +44,8 @@ db.User = require("./user")(sequelize, DataTypes);
 db.Image = require("./image")(sequelize, DataTypes);
 db.Video = require("./video")(sequelize, DataTypes);
 db.Comment = require("./comment")(sequelize, DataTypes);
+db.Tag = require("./tag")(sequelize, DataTypes);
+db.TagTaggable = require("./tagtaggable")(sequelize, DataTypes);
 
 //Establish associations after importing all models
 Object.keys(db).forEach((modelName) => {

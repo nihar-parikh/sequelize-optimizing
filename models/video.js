@@ -5,9 +5,11 @@ const {
   VIDEO_MODEL_KEYWORDS,
   USER_MODEL_KEYWORDS,
   COMMENT_MODEL_KEYWORDS,
+  TAG_TAGGABLE_MODEL_KEYWORDS,
 } = require("../shared/modelKeywords");
 const { MODEL_NAME, ID, TITLE, URL, USER_ID } = VIDEO_MODEL_KEYWORDS;
 const { COMMENTABLE_ID, COMMENTABLE_TYPE } = COMMENT_MODEL_KEYWORDS;
+const { TAGGABLE_ID, TAGGABLE_TYPE, TAG_ID } = TAG_TAGGABLE_MODEL_KEYWORDS;
 
 module.exports = (sequelize, DataTypes) => {
   class Video extends Model {
@@ -24,6 +26,19 @@ module.exports = (sequelize, DataTypes) => {
           [COMMENTABLE_TYPE]: "video",
         },
         as: "comments",
+      });
+      Video.belongsToMany(models.Tag, {
+        through: {
+          model: models.TagTaggable,
+          unique: false,
+          scope: {
+            [TAGGABLE_TYPE]: "video",
+          },
+        },
+        foreignKey: TAGGABLE_ID,
+        constraints: false,
+        otherKey: TAG_ID, // Add this line
+        as: "tags", // Add this line
       });
     }
   }

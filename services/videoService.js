@@ -3,7 +3,7 @@ const { TITLE, URL, USER_ID } = IMAGE_MODEL_KEYWORDS;
 const db = require("../models");
 const { getPaginatedResult } = require("../utils/getPaginatedResult");
 const { NotFoundError } = require("../errors");
-const { Video, User } = db;
+const { Video, User, Comment, Tag } = db;
 
 class VideoService {
   async addVideo(videoInputs) {
@@ -28,6 +28,14 @@ class VideoService {
       {
         model: User,
         as: "user",
+      },
+      {
+        model: Comment,
+        as: "comments",
+      },
+      {
+        model: Tag,
+        as: "tags",
       },
     ];
     return getPaginatedResult({

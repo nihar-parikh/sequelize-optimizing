@@ -3,7 +3,7 @@ const { FIRST_NAME, LAST_NAME, EMAIL } = USER_MODEL_KEYWORDS;
 const db = require("../models");
 const { getPaginatedResult } = require("../utils/getPaginatedResult");
 const { NotFoundError } = require("../errors");
-const { User, Image, Video, Comment } = db;
+const { User, Image, Video, Comment, Tag } = db;
 
 class UserService {
   async addUser(userInputs) {
@@ -33,6 +33,10 @@ class UserService {
             model: Comment,
             as: "comments",
           },
+          {
+            model: Tag,
+            as: "tags",
+          },
         ],
       },
       {
@@ -42,6 +46,10 @@ class UserService {
           {
             model: Comment,
             as: "comments",
+          },
+          {
+            model: Tag,
+            as: "tags",
           },
         ],
       },
@@ -71,6 +79,10 @@ class UserService {
               model: Comment,
               as: "comments",
             },
+            {
+              model: Tag,
+              as: "tags",
+            },
           ],
         },
         {
@@ -80,6 +92,10 @@ class UserService {
             {
               model: Comment,
               as: "comments",
+            },
+            {
+              model: Tag,
+              as: "tags",
             },
           ],
         },
