@@ -41,6 +41,7 @@ fs.readdirSync(__dirname)
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 db.User = require("./user")(sequelize, DataTypes);
+db.UserToken = require("./usertoken")(sequelize, DataTypes);
 db.Image = require("./image")(sequelize, DataTypes);
 db.Video = require("./video")(sequelize, DataTypes);
 db.Comment = require("./comment")(sequelize, DataTypes);

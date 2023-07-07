@@ -6,11 +6,16 @@ const {
   IMAGE_MODEL_KEYWORDS,
   VIDEO_MODEL_KEYWORDS,
 } = require("../shared/modelKeywords");
-const { MODEL_NAME, ID, FIRST_NAME, LAST_NAME, EMAIL } = USER_MODEL_KEYWORDS;
+const { MODEL_NAME, ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, SALT } =
+  USER_MODEL_KEYWORDS;
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
+      User.hasOne(models.UserToken, {
+        foreignKey: "userId",
+        as: "token",
+      });
       User.hasMany(models.Image, {
         foreignKey: IMAGE_MODEL_KEYWORDS.USER_ID,
         as: "images",
@@ -19,6 +24,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: VIDEO_MODEL_KEYWORDS.USER_ID,
         as: "videos",
       });
+    }
+    toJSON() {
+      const values = { ...this.get() };
+      delete values[PASSWORD];
+      delete values[SALT];
+      return values;
     }
   }
 
@@ -54,6 +65,19 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: true,
           isEmail: true,
         },
+      },
+      [PASSWORD]: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: true,
+          notEmpty: true,
+          len: [6, 255], // Minimum and maximum password length
+        },
+      },
+      [SALT]: {
+        type: DataTypes.STRING,
+        allowNull: false,
       },
     },
     {

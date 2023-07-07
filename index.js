@@ -8,6 +8,7 @@ process.on("uncaughtException", (error) => {
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const { expressApp } = require("./expressApp.js");
 const db = require("./models/index.js");
 
@@ -16,9 +17,11 @@ const port = 8000;
 
 const startServer = async () => {
   try {
-    await expressApp(app);
-
+    //following middleware should be before expressApp
     app.use(bodyParser.json());
+    app.use(cookieParser("krishna512")); //pass jwt secret key for signed cookies
+
+    await expressApp(app);
 
     app.listen(port, () => {
       console.log(`Server is running on port: ${port}`);

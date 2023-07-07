@@ -9,9 +9,9 @@ exports.createUserValidations = [
     .isString()
     .withMessage("Invalid user name")
     .isLength({ min: 2, max: 50 })
-    .withMessage("First Name must be between 2 and 50 characters")
-    .matches(/^[a-zA-Z\s]*$/, "i")
-    .withMessage("First Name should only contain letters and spaces"),
+    .withMessage("First Name must be between 2 and 50 characters"),
+  // .matches(/^[a-zA-Z\s]*$/, "i")
+  // .withMessage("First Name should only contain letters and spaces"),
   body("lastName")
     .trim()
     .not()
@@ -20,9 +20,9 @@ exports.createUserValidations = [
     .isString()
     .withMessage("Invalid user name")
     .isLength({ min: 2, max: 50 })
-    .withMessage("Last Name must be between 2 and 50 characters")
-    .matches(/^[a-zA-Z\s]*$/, "i")
-    .withMessage("Last Name should only contain letters and spaces"),
+    .withMessage("Last Name must be between 2 and 50 characters"),
+  // .matches(/^[a-zA-Z\s]*$/, "i")
+  // .withMessage("Last Name should only contain letters and spaces"),
   body("email")
     .isEmail()
     .withMessage("Invalid email")
