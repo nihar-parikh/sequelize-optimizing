@@ -1,39 +1,33 @@
 const { AuthenticationError } = require("../errors");
-const { getUserTokenById } = require("../services/userTokenService");
+const { getUserRefreshTokenById } = require("../services/userTokenService");
+const { asyncWrapper } = require("../utils/asyncWrapper");
 const { createJwtToken } = require("../utils/createJWTToken");
 const { verifyJwtToken } = require("../utils/verifyJwtToken");
 
-exports.isAuthenticate = async (req, res, next) => {
+exports.isAuthenticate = asyncWrapper(async (req, res, next) => {
   const { accessToken, refreshToken } = req.signedCookies;
-  //   console.log({ accessToken, refreshToken });
+
   if (!refreshToken) {
-    // throw new NotAuthorize("Not Authorized to access the page!");
     throw new AuthenticationError();
   }
 
-  try {
-    if (accessToken) {
-      const payload = verifyJwtToken(accessToken);
-      req.userInfo = payload;
-      next();
-      return;
-    }
-    console.log("krishna");
+  let payload;
+
+  if (accessToken) {
+    payload = verifyJwtToken(accessToken);
+  } else {
     const data = verifyJwtToken(refreshToken);
-    console.log({ data });
-    const { id, name, email, refreshToken } = data;
-    const token = await getUserTokenById(id);
-    console.log({ token });
+    const { id, firstName, lastName, email } = data;
+    const token = await getUserRefreshTokenById(id);
+
     if (!token) {
-      //   throw new NotAuthorize("Not Authorized to access the page!");
       throw new AuthenticationError();
     }
 
-    createJwtToken(res, { id, name, email }, refreshToken);
-    req.userInfo = { id, name, email };
-    next();
-  } catch (error) {
-    // throw new NotAuthorize("Not Authorized");
-    throw new AuthenticationError();
+    createJwtToken(res, { id, firstName, lastName, email }, data.refreshToken);
+    payload = { id, firstName, lastName, email };
   }
-};
+
+  req.userInfo = payload;
+  next();
+});

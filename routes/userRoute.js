@@ -5,6 +5,7 @@ const {
   getUserById,
   registerUser,
   loginUser,
+  logoutUser,
 } = require("../controllers/user");
 const {
   createUserValidations,
@@ -25,5 +26,6 @@ userRoute.post(
   getAllUsers
 );
 userRoute.post("", [...getUserByIdValidations], getUserById);
+userRoute.post("/logout", [isAuthenticate], logoutUser);
 
 module.exports = { userRoute };

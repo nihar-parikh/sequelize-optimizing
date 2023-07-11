@@ -46,43 +46,6 @@ class UserService {
     await setToken(existingUser, res);
   }
 
-  // async setToken(user, res) {
-  //   console.log("setToken");
-
-  //   const refreshToken = await getUserTokenById(user.id);
-
-  //   if (refreshToken) {
-  //     console.log("refreshToken");
-  //     createJwtToken(res, user, refreshToken.refreshToken);
-  //   } else {
-  //     const refreshToken = generateRefreshToken();
-  //     console.log("else refreshToken");
-  //     await createToken({ userId: user.id, refreshToken });
-  //     createJwtToken(res, user, refreshToken);
-  //   }
-  // }
-
-  // async getUserTokenById(id) {
-  //   console.log("getUserTokenById");
-  //   try {
-  //     const token = await UserToken.findOne({ userId: id });
-  //     return token;
-  //   } catch (error) {
-  //     throw new Error("Failed to retrieve user token");
-  //   }
-  // }
-
-  // async createToken(payload) {
-  //   try {
-  //     const token = await UserToken.create(payload);
-  //     if (!token) {
-  //       throw new Error("Failed to create user token");
-  //     }
-  //   } catch (error) {
-  //     throw new Error("Failed to create user token");
-  //   }
-  // }
-
   async fetchUserByEmail({ email }) {
     const user = await User.findOne({
       where: {

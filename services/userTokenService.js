@@ -3,41 +3,49 @@ const {
   generateRefreshToken,
 } = require("../utils/createJWTToken");
 const db = require("../models");
-const { UserToken } = db;
+const { NotFoundError } = require("../errors");
+const { UserToken, sequelize } = db;
 
 const setToken = async (user, res) => {
-  const refreshToken = await getUserTokenById(user.id);
+  const refreshToken = await getUserRefreshTokenById(user.id);
 
-  if (refreshToken) {
-    createJwtToken(res, user, refreshToken.refreshToken);
+  if (!refreshToken) {
+    const newRefreshToken = generateRefreshToken();
+    await sequelize.transaction(async (transaction) => {
+      await saveTokenToDB(
+        { userId: user.id, refreshToken: newRefreshToken },
+        transaction
+      );
+      createJwtToken(res, user.toJSON(), newRefreshToken);
+    });
   } else {
-    const refreshToken = generateRefreshToken();
-    await createToken({ userId: user.id, refreshToken });
-    createJwtToken(res, user, refreshToken);
+    createJwtToken(res, user.toJSON(), refreshToken.refreshToken);
   }
 };
 
-const getUserTokenById = async (id) => {
-  try {
-    const token = await UserToken.findOne({ where: { userId: id } });
-    return token;
-  } catch (error) {
-    throw new Error("Failed to retrieve user token");
+const getUserRefreshTokenById = async (id) => {
+  const token = await UserToken.findOne({ where: { userId: id } });
+  if (!token) {
+    throw new NotFoundError("Token not found");
   }
+  return token;
 };
 
-const createToken = async (payload) => {
-  try {
-    const token = await UserToken.create(payload);
-    if (!token) {
-      throw new Error("Failed to create user token");
-    }
-  } catch (error) {
-    throw new Error("Failed to create user token");
-  }
+const saveTokenToDB = async (payload, transaction) => {
+  const token = await UserToken.create(payload, { transaction });
+};
+
+const deleteToken = async (userId) => {
+  const token = UserToken.destroy({
+    where: {
+      userId,
+    },
+  });
+  return token;
 };
 
 module.exports = {
   setToken,
-  getUserTokenById,
+  getUserRefreshTokenById,
+  deleteToken,
 };

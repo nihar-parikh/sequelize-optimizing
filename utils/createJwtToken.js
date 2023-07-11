@@ -1,13 +1,16 @@
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const dotenv = require("dotenv");
+dotenv.config({ path: ".env" });
 
 exports.createJwtToken = (res, user, refresh_token) => {
-  const accessToken = jwt.sign(user.toJSON(), "krishna512", {
+  const accessToken = jwt.sign(user, process.env.JWT_TOKEN_SECRET, {
     expiresIn: "1d",
   });
+
   const refreshToken = jwt.sign(
-    { ...user.toJSON(), refresh_token },
-    "krishna512",
+    { ...user, refreshToken: refresh_token },
+    process.env.JWT_TOKEN_SECRET,
     {
       expiresIn: "7d",
     }
@@ -19,16 +22,17 @@ exports.createJwtToken = (res, user, refresh_token) => {
     secure: false,
     signed: true,
     sameSite: "lax",
-    expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
   };
 
   res.cookie("accessToken", accessToken, {
     ...cookieOptions,
-    maxAge: 1000 * 60,
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+    maxAge: 1000 * 60 * 60 * 24,
   });
   res.cookie("refreshToken", refreshToken, {
     ...cookieOptions,
-    maxAge: 1000 * 60 * 2,
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+    maxAge: 1000 * 60 * 60 * 24 * 7,
   });
 };
 
