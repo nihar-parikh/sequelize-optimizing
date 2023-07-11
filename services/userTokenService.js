@@ -25,9 +25,6 @@ const setToken = async (user, res) => {
 
 const getUserRefreshTokenById = async (id) => {
   const token = await UserToken.findOne({ where: { userId: id } });
-  if (!token) {
-    throw new NotFoundError("Token not found");
-  }
   return token;
 };
 
