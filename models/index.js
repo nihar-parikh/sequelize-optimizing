@@ -48,6 +48,7 @@ db.Comment = require("./comment")(sequelize, DataTypes);
 db.Tag = require("./tag")(sequelize, DataTypes);
 db.TagTaggable = require("./tagtaggable")(sequelize, DataTypes);
 db.Role = require("./role")(sequelize, DataTypes);
+db.Permission = require("./permission")(sequelize, DataTypes);
 
 //Establish associations after importing all models
 Object.keys(db).forEach((modelName) => {

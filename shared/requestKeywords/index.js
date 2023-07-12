@@ -5,3 +5,4 @@ exports.COMMENT_REQUEST_KEYWORDS = require("./comment");
 exports.TAG_REQUEST_KEYWORDS = require("./tag");
 exports.TAG_TAGGABLE_REQUEST_KEYWORDS = require("./tagTaggable");
 exports.ROLE_REQUEST_KEYWORDS = require("./role");
+exports.PERMISSION_REQUEST_KEYWORDS = require("./permission");

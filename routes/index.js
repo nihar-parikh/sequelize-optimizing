@@ -4,6 +4,7 @@ const { videoRoute } = require("./videoRoute");
 const { commentRoute } = require("./commentRoute");
 const { tagRoute } = require("./tagRoute");
 const { roleRoute } = require("./roleRoute");
+const { permissionRoute } = require("./permissionRoute");
 
 module.exports = {
   userRoute,
@@ -12,4 +13,5 @@ module.exports = {
   commentRoute,
   tagRoute,
   roleRoute,
+  permissionRoute,
 };

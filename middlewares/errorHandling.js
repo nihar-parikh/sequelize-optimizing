@@ -80,6 +80,7 @@ const schemaValidationErrorHandler = (error, req, res, next) => {
     case "SequelizeUniqueConstraintError":
       error = duplicateKeyErrorHandler(error);
       break;
+    //TODO -> WARN_DATA_TRUNCATED
   }
 
   handleErrorResponse(res, error, 400, "SCHEMA_VALIDATION_ERROR");
