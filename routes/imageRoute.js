@@ -15,7 +15,10 @@ imageRoute.post(
   [...createImageValidations],
   [isAuthenticate],
   hasAccess({
-    permissions: [{ permissionName: "post", action: "create" }],
+    // permissions: [{
+    permissionName: "post",
+    action: "create",
+    // }],
   }),
   createImage
 );
