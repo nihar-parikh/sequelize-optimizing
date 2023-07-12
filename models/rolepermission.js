@@ -2,24 +2,19 @@
 const { Model } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
 const {
+  ROLE_MODEL_KEYWORDS,
   PERMISSION_MODEL_KEYWORDS,
   ROLE_PERMISSION_MODEL_KEYWORDS,
 } = require("../shared/modelKeywords");
-const { MODEL_NAME, ID, PERMISSION_NAME, ACTION } = PERMISSION_MODEL_KEYWORDS;
-const { PERMISSION_ID } = ROLE_PERMISSION_MODEL_KEYWORDS;
+const { MODEL_NAME, ID, ROLE_ID, PERMISSION_ID } =
+  ROLE_PERMISSION_MODEL_KEYWORDS;
 
 module.exports = (sequelize, DataTypes) => {
-  class Permission extends Model {
-    static associate(models) {
-      Permission.belongsToMany(models.Role, {
-        through: models.RolePermission,
-        foreignKey: PERMISSION_ID,
-        as: "roles",
-      });
-    }
+  class RolePermission extends Model {
+    static associate(models) {}
   }
 
-  Permission.init(
+  RolePermission.init(
     {
       [ID]: {
         type: DataTypes.UUID,
@@ -27,13 +22,21 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: () => uuidv4(),
         allowNull: false,
       },
-      [PERMISSION_NAME]: {
-        type: DataTypes.STRING,
+      [ROLE_ID]: {
+        type: DataTypes.UUID,
         allowNull: false,
+        references: {
+          model: ROLE_MODEL_KEYWORDS.MODEL_NAME,
+          key: "id",
+        },
       },
-      [ACTION]: {
-        type: DataTypes.ENUM("create", "read", "update", "delete"),
+      [PERMISSION_ID]: {
+        type: DataTypes.UUID,
         allowNull: false,
+        references: {
+          model: PERMISSION_MODEL_KEYWORDS.MODEL_NAME,
+          key: "id",
+        },
       },
     },
     {
@@ -42,5 +45,5 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  return Permission;
+  return RolePermission;
 };

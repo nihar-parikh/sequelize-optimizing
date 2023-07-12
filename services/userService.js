@@ -11,7 +11,7 @@ const {
   generateRefreshToken,
 } = require("../utils/createJWTToken");
 const { setToken } = require("./userTokenService");
-const { User, Image, Video, Comment, Tag, UserToken, Role } = db;
+const { User, Image, Video, Comment, Tag, UserToken, Role, Permission } = db;
 
 class UserService {
   async signUpUser(userInputs) {
@@ -74,6 +74,13 @@ class UserService {
         {
           model: Role,
           as: "role",
+          required: true,
+          include: [
+            {
+              model: Permission,
+              as: "permissions",
+            },
+          ],
         },
       ],
     });
@@ -143,7 +150,7 @@ class UserService {
   }
 
   async fetchUserById(userId) {
-    const user = await User.findOne({
+    let user = await User.findOne({
       where: {
         id: userId,
       },
@@ -151,6 +158,12 @@ class UserService {
         {
           model: Role,
           as: "role",
+          include: [
+            {
+              model: Permission,
+              as: "permissions",
+            },
+          ],
         },
         {
           model: Image,
@@ -185,6 +198,7 @@ class UserService {
     if (!user) {
       throw new NotFoundError("User not found");
     }
+
     return user;
   }
 }

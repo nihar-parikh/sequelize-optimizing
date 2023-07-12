@@ -6,3 +6,4 @@ exports.TAG_MODEL_KEYWORDS = require("./tag");
 exports.TAG_TAGGABLE_MODEL_KEYWORDS = require("./tagTaggable");
 exports.ROLE_MODEL_KEYWORDS = require("./role");
 exports.PERMISSION_MODEL_KEYWORDS = require("./permission");
+exports.ROLE_PERMISSION_MODEL_KEYWORDS = require("./rolePermission");

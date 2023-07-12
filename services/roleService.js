@@ -2,7 +2,7 @@ const { ROLE_MODEL_KEYWORDS } = require("../shared/modelKeywords");
 const { ID, ROLE_NAME } = ROLE_MODEL_KEYWORDS;
 const db = require("../models");
 const { NotFoundError } = require("../errors");
-const { Role } = db;
+const { Role, RolePermission } = db;
 
 class RoleService {
   async addRole(roleInputs) {
@@ -23,6 +23,14 @@ class RoleService {
       throw new NotFoundError("Role does not exist");
     }
     return existingRole;
+  }
+
+  async addPermissionsToRole({ roleId, permissionId }) {
+    const assignedNewPermissions = await RolePermission.create({
+      roleId,
+      permissionId,
+    });
+    return assignedNewPermissions;
   }
 }
 
