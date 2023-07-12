@@ -17,15 +17,19 @@ exports.isAuthenticate = asyncWrapper(async (req, res, next) => {
     payload = verifyJwtToken(accessToken);
   } else {
     const data = verifyJwtToken(refreshToken);
-    const { id, firstName, lastName, email } = data;
+    const { id, firstName, lastName, email, role } = data;
     const token = await getUserRefreshTokenById(id);
 
     if (!token) {
       throw new AuthenticationError();
     }
 
-    createJwtToken(res, { id, firstName, lastName, email }, data.refreshToken);
-    payload = { id, firstName, lastName, email };
+    createJwtToken(
+      res,
+      { id, firstName, lastName, email, role },
+      data.refreshToken
+    );
+    payload = { id, firstName, lastName, email, role };
   }
 
   req.userInfo = payload;

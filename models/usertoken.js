@@ -1,6 +1,8 @@
 "use strict";
 const { Model } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
+const { USER_MODEL_KEYWORDS } = require("../shared/modelKeywords");
+const { USER_ID } = USER_MODEL_KEYWORDS;
 
 module.exports = (sequelize, DataTypes) => {
   class UserToken extends Model {

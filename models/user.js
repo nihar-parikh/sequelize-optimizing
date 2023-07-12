@@ -5,9 +5,19 @@ const {
   USER_MODEL_KEYWORDS,
   IMAGE_MODEL_KEYWORDS,
   VIDEO_MODEL_KEYWORDS,
+  ROLE_MODEL_KEYWORDS,
 } = require("../shared/modelKeywords");
-const { MODEL_NAME, ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, SALT } =
-  USER_MODEL_KEYWORDS;
+const {
+  MODEL_NAME,
+  ID,
+  FIRST_NAME,
+  LAST_NAME,
+  EMAIL,
+  PASSWORD,
+  SALT,
+  ROLE_ID,
+  USER_ID,
+} = USER_MODEL_KEYWORDS;
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -15,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
       User.hasOne(models.UserToken, {
         foreignKey: "userId",
         as: "token",
+      });
+      User.belongsTo(models.Role, {
+        foreignKey: ROLE_ID,
+        as: "role",
       });
       User.hasMany(models.Image, {
         foreignKey: IMAGE_MODEL_KEYWORDS.USER_ID,

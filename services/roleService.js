@@ -1,6 +1,7 @@
 const { ROLE_MODEL_KEYWORDS } = require("../shared/modelKeywords");
-const { ROLE_NAME } = ROLE_MODEL_KEYWORDS;
+const { ID, ROLE_NAME } = ROLE_MODEL_KEYWORDS;
 const db = require("../models");
+const { NotFoundError } = require("../errors");
 const { Role } = db;
 
 class RoleService {
@@ -10,6 +11,18 @@ class RoleService {
       [ROLE_NAME]: roleName,
     });
     return newRole;
+  }
+
+  async fetchRoleById(roleId) {
+    const existingRole = await Role.findOne({
+      where: {
+        [ID]: roleId,
+      },
+    });
+    if (!existingRole) {
+      throw new NotFoundError("Role does not exist");
+    }
+    return existingRole;
   }
 }
 
