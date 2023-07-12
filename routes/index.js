@@ -3,6 +3,7 @@ const { imageRoute } = require("./imageRoute");
 const { videoRoute } = require("./videoRoute");
 const { commentRoute } = require("./commentRoute");
 const { tagRoute } = require("./tagRoute");
+const { roleRoute } = require("./roleRoute");
 
 module.exports = {
   userRoute,
@@ -10,4 +11,5 @@ module.exports = {
   videoRoute,
   commentRoute,
   tagRoute,
+  roleRoute,
 };

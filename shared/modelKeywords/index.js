@@ -4,3 +4,4 @@ exports.VIDEO_MODEL_KEYWORDS = require("./video");
 exports.COMMENT_MODEL_KEYWORDS = require("./comment");
 exports.TAG_MODEL_KEYWORDS = require("./tag");
 exports.TAG_TAGGABLE_MODEL_KEYWORDS = require("./tagTaggable");
+exports.ROLE_MODEL_KEYWORDS = require("./role");
