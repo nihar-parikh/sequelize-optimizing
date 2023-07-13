@@ -5,6 +5,7 @@ const { asyncWrapper } = require("../../utils/asyncWrapper");
 const {
   requestValidationHandler,
 } = require("../../middlewares/requestValidationHandler");
+const { NotFoundError, AccessDeniedError } = require("../../errors");
 
 const userService = new UserService();
 
@@ -13,22 +14,28 @@ exports.loginUser = asyncWrapper(async (req, res, next) => {
 
   const { [EMAIL]: email, [PASSWORD]: password } = req.body;
 
-  let existingUser = await userService.fetchUserByEmail({
+  const existingUser = await userService.fetchUserByEmail({
     email,
   });
 
-  if (existingUser) {
-    const isMatchedPassword = await userService.matchPassword({
-      enteredPassword: password,
-      savedPassword: existingUser.password,
-      savedSalt: existingUser.salt,
-    });
-    if (isMatchedPassword) {
-      await userService.signInUser(existingUser, res);
-      return res.status(200).json({
-        status: "success",
-        data: existingUser,
-      });
-    }
+  if (!existingUser) {
+    throw new NotFoundError("Invalid credentials", "INVALID_CREDENTIALS");
   }
+
+  const isMatchedPassword = await userService.matchPassword({
+    enteredPassword: password,
+    savedPassword: existingUser.password,
+    savedSalt: existingUser.salt,
+  });
+
+  if (!isMatchedPassword) {
+    throw new AccessDeniedError("Invalid credentials", "INVALID_CREDENTIALS");
+  }
+
+  await userService.signInUser(existingUser, res);
+
+  return res.status(200).json({
+    status: "success",
+    data: existingUser,
+  });
 });

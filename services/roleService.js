@@ -19,9 +19,6 @@ class RoleService {
         [ID]: roleId,
       },
     });
-    if (!existingRole) {
-      throw new NotFoundError("Role does not exist");
-    }
     return existingRole;
   }
 

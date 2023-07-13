@@ -4,7 +4,7 @@ const { asyncWrapper } = require("../utils/asyncWrapper");
 const { createJwtToken } = require("../utils/createJWTToken");
 const { verifyJwtToken } = require("../utils/verifyJwtToken");
 
-exports.isAuthenticate = asyncWrapper(async (req, res, next) => {
+exports.isAuthenticated = asyncWrapper(async (req, res, next) => {
   const { accessToken, refreshToken } = req.signedCookies;
 
   if (!refreshToken) {

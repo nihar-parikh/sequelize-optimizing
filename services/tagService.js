@@ -29,28 +29,7 @@ class TagService {
     filterFields,
     search,
   }) {
-    include = [
-      {
-        model: Image,
-        as: "images",
-        include: [
-          {
-            model: Comment,
-            as: "comments",
-          },
-        ],
-      },
-      {
-        model: Video,
-        as: "videos",
-        include: [
-          {
-            model: Comment,
-            as: "comments",
-          },
-        ],
-      },
-    ];
+    include = getTagIncludeOptions();
     return getPaginatedResult({
       Model: Tag,
       filter,
@@ -62,5 +41,36 @@ class TagService {
     });
   }
 }
+
+const getTagIncludeOptions = () => {
+  return [
+    {
+      model: Image,
+      as: "images",
+      attributes: ["id", "title", "url"],
+      include: [
+        {
+          model: Comment,
+          as: "comments",
+          attributes: ["id", "title"],
+        },
+      ],
+      through: { attributes: [] },
+    },
+    {
+      model: Video,
+      as: "videos",
+      attributes: ["id", "title", "url"],
+      include: [
+        {
+          model: Comment,
+          as: "comments",
+          attributes: ["id", "title"],
+        },
+      ],
+      through: { attributes: [] },
+    },
+  ];
+};
 
 module.exports = { TagService };

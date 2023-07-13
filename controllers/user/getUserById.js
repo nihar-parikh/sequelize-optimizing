@@ -5,6 +5,7 @@ const { asyncWrapper } = require("../../utils/asyncWrapper");
 const {
   requestValidationHandler,
 } = require("../../middlewares/requestValidationHandler");
+const { NotFoundError } = require("../../errors");
 
 const userService = new UserService();
 
@@ -14,10 +15,12 @@ exports.getUserById = asyncWrapper(async (req, res, next) => {
   const { [USER_ID]: userId } = req.body;
 
   const user = await userService.fetchUserById(userId);
-  if (user) {
-    return res.status(200).json({
-      status: "success",
-      data: user,
-    });
+  if (!user) {
+    throw new NotFoundError("User not found");
   }
+
+  return res.status(200).json({
+    status: "success",
+    data: user,
+  });
 });

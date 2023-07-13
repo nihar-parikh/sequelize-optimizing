@@ -12,7 +12,7 @@ const {
   getAllUsersValidations,
   getUserByIdValidations,
 } = require("../validations/userValidations.js");
-const { isAuthenticate } = require("../middlewares/isAuthenticate");
+const { isAuthenticated } = require("../middlewares/isAuthenticated");
 
 const userRoute = express.Router();
 
@@ -21,11 +21,11 @@ userRoute.post("/login", [], loginUser);
 userRoute.post("/create", [...createUserValidations], createUser);
 userRoute.post(
   "/all",
-  [isAuthenticate],
+  [isAuthenticated],
   [...getAllUsersValidations],
   getAllUsers
 );
-userRoute.post("", [...getUserByIdValidations], getUserById);
-userRoute.post("/logout", [isAuthenticate], logoutUser);
+userRoute.post("", [...getUserByIdValidations], [isAuthenticated], getUserById);
+userRoute.post("/logout", [isAuthenticated], logoutUser);
 
 module.exports = { userRoute };

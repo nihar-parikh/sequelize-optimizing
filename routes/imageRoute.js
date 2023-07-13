@@ -6,22 +6,29 @@ const {
   getAllImagesValidations,
 } = require("../validations/imageValidations");
 const { hasAccess } = require("../middlewares/hasAccess");
-const { isAuthenticate } = require("../middlewares/isAuthenticate");
+const { isAuthenticated } = require("../middlewares/isAuthenticated");
 
 const imageRoute = express.Router();
 
 imageRoute.post(
   "/add",
   [...createImageValidations],
-  [isAuthenticate],
+  [isAuthenticated],
   hasAccess({
-    // permissions: [{
-    permissionName: "post",
-    action: "create",
-    // }],
+    requiredPermissionName: "post",
+    requiredAction: "create",
   }),
   createImage
 );
-imageRoute.post("/all", [...getAllImagesValidations], getAllImages);
+imageRoute.post(
+  "/all",
+  [...getAllImagesValidations],
+  [isAuthenticated],
+  hasAccess({
+    requiredPermissionName: "post",
+    requiredAction: "read",
+  }),
+  getAllImages
+);
 
 module.exports = { imageRoute };

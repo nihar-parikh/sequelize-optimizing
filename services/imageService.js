@@ -3,7 +3,7 @@ const { TITLE, URL, USER_ID } = IMAGE_MODEL_KEYWORDS;
 const db = require("../models");
 const { getPaginatedResult } = require("../utils/getPaginatedResult");
 const { NotFoundError } = require("../errors");
-const { Image, User, Comment, Tag } = db;
+const { Image, User, Comment, Tag, Role, Permission } = db;
 
 class ImageService {
   async addImage(imageInputs) {
@@ -24,20 +24,7 @@ class ImageService {
     filterFields,
     search,
   }) {
-    include = [
-      {
-        model: User,
-        as: "user",
-      },
-      {
-        model: Comment,
-        as: "comments",
-      },
-      {
-        model: Tag,
-        as: "tags",
-      },
-    ];
+    include = getImageIncludeOptions();
     return getPaginatedResult({
       Model: Image,
       filter,
@@ -49,5 +36,41 @@ class ImageService {
     });
   }
 }
+
+const getImageIncludeOptions = () => {
+  return [
+    {
+      model: User,
+      as: "user",
+      attributes: ["id", "firstName", "lastName", "email"],
+      include: [
+        {
+          model: Role,
+          as: "role",
+          attributes: ["id", "roleName"],
+          include: [
+            {
+              model: Permission,
+              as: "permissions",
+              attributes: ["id", "permissionName", "action"],
+              through: { attributes: [] }, // Exclude the join table attributes
+            },
+          ],
+        },
+      ],
+    },
+    {
+      model: Comment,
+      as: "comments",
+      attributes: ["id", "title"],
+    },
+    {
+      model: Tag,
+      as: "tags",
+      attributes: ["id", "name"],
+      through: { attributes: [] },
+    },
+  ];
+};
 
 module.exports = { ImageService };

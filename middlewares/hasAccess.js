@@ -1,40 +1,16 @@
 const { AuthenticationError } = require("../errors");
 const { asyncWrapper } = require("../utils/asyncWrapper");
 
-// const hasAccess = ({ permissions = [] }) => {
-//   return asyncWrapper(async (req, res, next) => {
-//     if (
-//       permissions.length &&
-//       !checkHasRequiredPermissions(req.userInfo.role.permissions, permissions)
-//     ) {
-//       throw new AuthenticationError(
-//         "You are not permitted to perform this action"
-//       );
-//     }
-//     next();
-//   });
-// };
-
-// const checkHasRequiredPermissions = (userPermissions, requiredPermissions) => {
-//   for (const permission of requiredPermissions) {
-//     const permissionExists =
-//       userPermissions.findIndex((userPerm) => {
-//         return (
-//           userPerm.permissionName === permission.permissionName &&
-//           userPerm.action === permission.action
-//         );
-//       }) !== -1;
-//     if (!permissionExists) {
-//       return false;
-//     }
-//   }
-//   return true;
-// };
-
-const hasAccess = ({ permissionName, action }) => {
+const hasAccess = ({ requiredPermissionName, requiredAction }) => {
   return asyncWrapper(async (req, res, next) => {
     const { role } = req.userInfo;
-    if (!checkHasRequiredPermission(role.permissions, permissionName, action)) {
+    if (
+      !checkHasRequiredPermission(
+        role.permissions,
+        requiredPermissionName,
+        requiredAction
+      )
+    ) {
       throw new AuthenticationError(
         "You are not permitted to perform this action"
       );
@@ -45,10 +21,10 @@ const hasAccess = ({ permissionName, action }) => {
 
 const checkHasRequiredPermission = (
   userPermissions,
-  permissionName,
-  action
+  requiredPermissionName,
+  requiredAction
 ) => {
-  const permissionKey = `${permissionName}_${action}`;
+  const permissionKey = `${requiredPermissionName}_${requiredAction}`;
   return userPermissions.some((permission) => {
     const userPermissionKey = `${permission.permissionName}_${permission.action}`;
     return userPermissionKey === permissionKey;

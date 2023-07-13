@@ -3,7 +3,7 @@ const { TITLE, COMMENTABLE_ID, COMMENTABLE_TYPE } = COMMENT_MODEL_KEYWORDS;
 const db = require("../models");
 const { getPaginatedResult } = require("../utils/getPaginatedResult");
 const { NotFoundError } = require("../errors");
-const { Image, Comment, Video } = db;
+const { Image, Comment, Video, Tag } = db;
 
 class CommentService {
   async addComment(commentInputs) {
@@ -26,15 +26,31 @@ class CommentService {
   }) {
     const commentableType = filterFields?.commentableType;
 
-    const includeImage = { model: Image, as: "image" };
-    const includeVideo = { model: Video, as: "video" };
+    const includeTag = {
+      model: Tag,
+      as: "tags",
+      attributes: ["id", "name"],
+      through: { attributes: [] },
+    };
 
-    include =
-      commentableType === "image"
-        ? [includeImage]
-        : commentableType === "video"
-        ? [includeVideo]
-        : [includeImage, includeVideo];
+    const includeLookup = {
+      image: {
+        model: Image,
+        as: "image",
+        attributes: ["id", "title", "url"],
+        include: [includeTag],
+      },
+      video: {
+        model: Video,
+        as: "video",
+        attributes: ["id", "title", "url"],
+        include: [includeTag],
+      },
+    };
+
+    include = commentableType
+      ? [includeLookup[commentableType]]
+      : [includeLookup.image, includeLookup.video];
 
     return getPaginatedResult({
       Model: Comment,

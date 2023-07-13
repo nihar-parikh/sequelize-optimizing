@@ -7,6 +7,7 @@ const {
   requestValidationHandler,
 } = require("../../middlewares/requestValidationHandler");
 const { RoleService } = require("../../services/roleService");
+const { NotFoundError, ConflictError } = require("../../errors");
 
 const userService = new UserService();
 const roleService = new RoleService();
@@ -22,21 +23,32 @@ exports.registerUser = asyncWrapper(async (req, res, next) => {
     [ROLE_ID]: roleId,
   } = req.body;
 
+  const existingUser = await userService.fetchUserByEmail({
+    email,
+  });
+
+  if (!existingUser) {
+    throw new ConflictError("User already exists, please login");
+  }
+
   const existingRole = await roleService.fetchRoleById(roleId);
 
-  if (existingRole) {
-    const newUser = await userService.signUpUser({
-      firstName,
-      lastName,
-      email,
-      password,
-      roleId: existingRole.id,
-    });
-    if (newUser) {
-      return res.status(200).json({
-        status: "success",
-        data: newUser,
-      });
-    }
+  if (!existingRole) {
+    throw new NotFoundError("Role does not exist");
   }
+
+  const newUser = await userService.signUpUser({
+    firstName,
+    lastName,
+    email,
+    password,
+    roleId: existingRole.id,
+  });
+  if (!newUser) {
+    throw new ConflictError("Unable to register user");
+  }
+  return res.status(200).json({
+    status: "success",
+    data: newUser,
+  });
 });

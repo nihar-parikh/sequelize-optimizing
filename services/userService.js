@@ -3,7 +3,7 @@ const { FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, SALT, ROLE_ID } =
   USER_MODEL_KEYWORDS;
 const db = require("../models");
 const { getPaginatedResult } = require("../utils/getPaginatedResult");
-const { NotFoundError } = require("../errors");
+const { NotFoundError, AccessDeniedError } = require("../errors");
 const { generateSalt, generatePassword } = require("../utils/generatePassword");
 const { validatePassword } = require("../utils/validatePassword");
 const {
@@ -22,7 +22,7 @@ class UserService {
 
     const hashedPassword = await generatePassword(password, salt);
 
-    let newUser = await User.create({
+    const newUser = await User.create({
       [FIRST_NAME]: firstName,
       [LAST_NAME]: lastName,
       [EMAIL]: email,
@@ -43,23 +43,6 @@ class UserService {
     return isValidPassword;
   }
 
-  // async assignRole(userId, roleId, transaction) {
-  //   const user = await User.findByPk(userId, { transaction });
-  //   if (!user) {
-  //     throw new NotFoundError(`User with ID ${userId} not found.`);
-  //   }
-
-  //   const role = await Role.findByPk(roleId, { transaction });
-  //   if (!role) {
-  //     throw new NotFoundError(`Role with ID ${roleId} not found.`);
-  //   }
-
-  //   user.roleId = roleId;
-  //   await user.save();
-
-  //   return true;
-  // }
-
   async signInUser(existingUser, res) {
     // Generate tokens and set cookies
     await setToken(existingUser, res);
@@ -75,18 +58,19 @@ class UserService {
           model: Role,
           as: "role",
           required: true,
+          attributes: ["id", "roleName"],
           include: [
             {
               model: Permission,
               as: "permissions",
+              attributes: ["id", "permissionName", "action"],
+              through: { attributes: [] }, // Exclude the join table attributes
             },
           ],
         },
       ],
     });
-    if (!user) {
-      throw new NotFoundError("User not found");
-    }
+
     return user;
   }
 
@@ -108,36 +92,7 @@ class UserService {
     filterFields,
     search,
   }) {
-    include = [
-      {
-        model: Image,
-        as: "images",
-        include: [
-          {
-            model: Comment,
-            as: "comments",
-          },
-          {
-            model: Tag,
-            as: "tags",
-          },
-        ],
-      },
-      {
-        model: Video,
-        as: "videos",
-        include: [
-          {
-            model: Comment,
-            as: "comments",
-          },
-          {
-            model: Tag,
-            as: "tags",
-          },
-        ],
-      },
-    ];
+    include = getUserIncludeOptions();
     return getPaginatedResult({
       Model: User,
       filter,
@@ -150,57 +105,68 @@ class UserService {
   }
 
   async fetchUserById(userId) {
-    let user = await User.findOne({
+    const user = await User.findOne({
       where: {
         id: userId,
       },
-      include: [
-        {
-          model: Role,
-          as: "role",
-          include: [
-            {
-              model: Permission,
-              as: "permissions",
-            },
-          ],
-        },
-        {
-          model: Image,
-          as: "images",
-          include: [
-            {
-              model: Comment,
-              as: "comments",
-            },
-            {
-              model: Tag,
-              as: "tags",
-            },
-          ],
-        },
-        {
-          model: Video,
-          as: "videos",
-          include: [
-            {
-              model: Comment,
-              as: "comments",
-            },
-            {
-              model: Tag,
-              as: "tags",
-            },
-          ],
-        },
-      ],
+      include: getUserIncludeOptions(),
     });
-    if (!user) {
-      throw new NotFoundError("User not found");
-    }
-
     return user;
   }
 }
+
+const getUserIncludeOptions = () => {
+  return [
+    {
+      model: Role,
+      as: "role",
+      attributes: ["id", "roleName"],
+      include: [
+        {
+          model: Permission,
+          as: "permissions",
+          attributes: ["id", "permissionName", "action"],
+          through: { attributes: [] }, // Exclude the join table attributes
+        },
+      ],
+    },
+    {
+      model: Image,
+      as: "images",
+      attributes: ["id", "title", "url"],
+      include: [
+        {
+          model: Comment,
+          as: "comments",
+          attributes: ["id", "title"],
+        },
+        {
+          model: Tag,
+          as: "tags",
+          attributes: ["id", "name"],
+          through: { attributes: [] },
+        },
+      ],
+    },
+    {
+      model: Video,
+      as: "videos",
+      attributes: ["id", "title", "url"],
+      include: [
+        {
+          model: Comment,
+          as: "comments",
+          attributes: ["id", "title"],
+        },
+        {
+          model: Tag,
+          as: "tags",
+          attributes: ["id", "name"],
+          through: { attributes: [] },
+        },
+      ],
+    },
+  ];
+};
 
 module.exports = { UserService };
