@@ -6,6 +6,8 @@ const {
   requestValidationHandler,
 } = require("../../middlewares/requestValidationHandler");
 const { NotFoundError, AccessDeniedError } = require("../../errors");
+const { encryptData } = require("../../utils/encryption");
+const { decryptData } = require("../../utils/decryption");
 
 const userService = new UserService();
 
@@ -36,6 +38,7 @@ exports.loginUser = asyncWrapper(async (req, res, next) => {
 
   return res.status(200).json({
     status: "success",
-    data: existingUser,
+    // data: existingUser,
+    data: decryptData(encryptData(existingUser)),
   });
 });
