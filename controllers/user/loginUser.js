@@ -85,8 +85,7 @@ exports.loginUser = asyncWrapper(async (req, res, next) => {
   // const decryptedPayload = decryptData(encryptedPayload, key, iv);
 
   console.log({ decryptedPayload });
-  // req.body = decryptedPayload;
-  // console.log({ req });
+
   requestValidationHandler(decryptedPayload);
 
   const { [EMAIL]: email, [PASSWORD]: password } = decryptedPayload;

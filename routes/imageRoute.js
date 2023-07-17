@@ -22,12 +22,19 @@ imageRoute.post(
 );
 imageRoute.post(
   "/all",
-  [...getAllImagesValidations],
-  [isAuthenticated],
-  hasAccess({
-    requiredPermissionName: "post",
-    requiredAction: "read",
-  }),
+  [
+    ...getAllImagesValidations,
+    isAuthenticated,
+    hasAccess({
+      requiredPermissionName: "post",
+      requiredAction: "read",
+    }),
+  ],
+  // [isAuthenticated],
+  // hasAccess({
+  //   requiredPermissionName: "post",
+  //   requiredAction: "read",
+  // }),
   getAllImages
 );
 
