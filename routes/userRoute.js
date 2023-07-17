@@ -11,13 +11,14 @@ const {
   createUserValidations,
   getAllUsersValidations,
   getUserByIdValidations,
+  loginValidations,
 } = require("../validations/userValidations.js");
 const { isAuthenticated } = require("../middlewares/isAuthenticated");
 
 const userRoute = express.Router();
 
 userRoute.post("/register", [], registerUser);
-userRoute.post("/login", [], loginUser);
+userRoute.post("/login", [...loginValidations], loginUser);
 userRoute.post("/create", [...createUserValidations], createUser);
 userRoute.post(
   "/all",

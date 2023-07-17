@@ -57,3 +57,18 @@ exports.getUserByIdValidations = [
     .isUUID()
     .withMessage("Invalid user id: must be a valid UUID"),
 ];
+
+exports.loginValidations = [
+  body("email")
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email format")
+    .isLength({ max: 255 })
+    .withMessage("Email must be less than or equal to 255 characters"),
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .isString()
+    .withMessage("Invalid password format"),
+];
