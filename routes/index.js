@@ -5,6 +5,7 @@ const { commentRoute } = require("./commentRoute");
 const { tagRoute } = require("./tagRoute");
 const { roleRoute } = require("./roleRoute");
 const { permissionRoute } = require("./permissionRoute");
+const { encryptConfigRoute } = require("./encryptConfigRoute");
 
 module.exports = {
   userRoute,
@@ -14,4 +15,5 @@ module.exports = {
   tagRoute,
   roleRoute,
   permissionRoute,
+  encryptConfigRoute,
 };

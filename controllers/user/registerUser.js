@@ -8,12 +8,14 @@ const {
 } = require("../../middlewares/requestValidationHandler");
 const { RoleService } = require("../../services/roleService");
 const { NotFoundError, ConflictError } = require("../../errors");
+const { encryptedResponse } = require("../../utils/encryptedResponse");
+const { key, iv } = require("../../config/encryptionConfig");
 
 const userService = new UserService();
 const roleService = new RoleService();
 
 exports.registerUser = asyncWrapper(async (req, res, next) => {
-  requestValidationHandler(req);
+  requestValidationHandler(req.body);
 
   const {
     [FIRST_NAME]: firstName,
@@ -27,7 +29,7 @@ exports.registerUser = asyncWrapper(async (req, res, next) => {
     email,
   });
 
-  if (!existingUser) {
+  if (existingUser) {
     throw new ConflictError("User already exists, please login");
   }
 
@@ -47,8 +49,11 @@ exports.registerUser = asyncWrapper(async (req, res, next) => {
   if (!newUser) {
     throw new ConflictError("Unable to register user");
   }
-  return res.status(200).json({
-    status: "success",
+  return encryptedResponse({
+    res,
+    statusCode: 201,
     data: newUser,
+    key,
+    iv,
   });
 });

@@ -1,22 +1,24 @@
-const crypto = require("crypto");
+const CryptoJS = require("crypto-js");
 
-const algorithm = "aes-256-cbc";
-
-// Function to encrypt the response data
 const encryptData = (data, key, iv) => {
-  console.log({ algorithm, key, iv });
-  const cipher = crypto.createCipheriv(algorithm, key, iv);
-  let encryptedData = cipher.update(JSON.stringify(data), "utf8", "hex");
-  encryptedData += cipher.final("hex");
+  const encryptedData = CryptoJS.AES.encrypt(
+    JSON.stringify(data),
+    CryptoJS.enc.Hex.parse(key),
+    {
+      iv: CryptoJS.enc.Hex.parse(iv),
+    }
+  ).toString();
   return encryptedData;
 };
 
-// Function to decrypt the request body payload
 const decryptData = (encryptedData, key, iv) => {
-  console.log({ algorithm, key, iv });
-  const decipher = crypto.createDecipheriv(algorithm, key, iv);
-  let decryptedData = decipher.update(encryptedData, "hex", "utf8");
-  decryptedData += decipher.final("utf8");
+  const decryptedData = CryptoJS.AES.decrypt(
+    encryptedData,
+    CryptoJS.enc.Hex.parse(key),
+    {
+      iv: CryptoJS.enc.Hex.parse(iv),
+    }
+  ).toString(CryptoJS.enc.Utf8);
   return JSON.parse(decryptedData);
 };
 

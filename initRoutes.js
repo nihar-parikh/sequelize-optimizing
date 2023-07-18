@@ -6,6 +6,7 @@ const {
   tagRoute,
   roleRoute,
   permissionRoute,
+  encryptConfigRoute,
 } = require("./routes");
 
 const initRoutes = (app) => {
@@ -16,6 +17,7 @@ const initRoutes = (app) => {
   app.use("/api/v1/tag", tagRoute);
   app.use("/api/v1/role", roleRoute);
   app.use("/api/v1/permission", permissionRoute);
+  app.use("/api/v1/encrypt-config", encryptConfigRoute);
 };
 
 module.exports = { initRoutes };
