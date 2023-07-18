@@ -19,7 +19,7 @@ const startServer = async () => {
   try {
     //following middleware should be before expressApp
     app.use(bodyParser.json());
-    app.use(cookieParser("krishna512")); //pass jwt secret key for signed cookies
+    app.use(cookieParser(process.env.JWT_TOKEN_SECRET)); //pass jwt secret key for signed cookies
 
     await expressApp(app);
 
