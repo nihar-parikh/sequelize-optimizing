@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const dotenv = require("dotenv");
+const { encryptData } = require("./encryptDecrypt");
+const { key, iv } = require("../config/encryptionConfig");
 dotenv.config({ path: ".env" });
 
 exports.createJwtToken = (res, user, refresh_token) => {
@@ -24,12 +26,17 @@ exports.createJwtToken = (res, user, refresh_token) => {
     sameSite: "lax",
   };
 
-  res.cookie("accessToken", accessToken, {
+  const encryptedAccessToken = encryptData(accessToken, key, iv);
+  const encryptedRefreshToken = encryptData(refreshToken, key, iv);
+
+  console.log({ encryptedAccessToken, encryptedRefreshToken });
+
+  res.cookie("accessToken", encryptedAccessToken, {
     ...cookieOptions,
     expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
     maxAge: 1000 * 60 * 60 * 24,
   });
-  res.cookie("refreshToken", refreshToken, {
+  res.cookie("refreshToken", encryptedRefreshToken, {
     ...cookieOptions,
     expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
     maxAge: 1000 * 60 * 60 * 24 * 7,

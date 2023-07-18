@@ -23,8 +23,7 @@ userRoute.post("/login", [decryptRequestBody, ...loginValidations], loginUser);
 userRoute.post("/create", [...createUserValidations], createUser);
 userRoute.post(
   "/all",
-  [isAuthenticated],
-  [...getAllUsersValidations],
+  [decryptRequestBody, isAuthenticated, ...getAllUsersValidations],
   getAllUsers
 );
 userRoute.post("", [...getUserByIdValidations], [isAuthenticated], getUserById);

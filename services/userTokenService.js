@@ -30,6 +30,7 @@ const getUserRefreshTokenById = async (id) => {
 
 const saveTokenToDB = async (payload, transaction) => {
   const token = await UserToken.create(payload, { transaction });
+  console.log({ token });
 };
 
 const deleteToken = async (userId) => {
