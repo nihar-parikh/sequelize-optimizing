@@ -20,7 +20,7 @@ const handleErrorResponse = (res, error, statusCode, errorType) => {
 };
 
 const authenticationErrorHandler = (error, req, res, next) => {
-  // console.log("authenticationErrorHandler");
+  console.log("authenticationErrorHandler");
   if (error instanceof AuthenticationError) {
     return handleErrorResponse(res, error, 401, error.errorType);
   }
@@ -28,7 +28,7 @@ const authenticationErrorHandler = (error, req, res, next) => {
 };
 
 const notFoundErrorHandler = (error, req, res, next) => {
-  // console.log("notFoundErrorHandler");
+  console.log("notFoundErrorHandler");
   if (error instanceof NotFoundError) {
     return handleErrorResponse(res, error, 404, error.errorType);
   }
@@ -36,7 +36,7 @@ const notFoundErrorHandler = (error, req, res, next) => {
 };
 
 const conflictErrorHandler = (error, req, res, next) => {
-  // console.log("conflictErrorHandler");
+  console.log("conflictErrorHandler");
   if (error instanceof ConflictError) {
     return handleErrorResponse(res, error, 409, error.errorType);
   }
@@ -44,7 +44,7 @@ const conflictErrorHandler = (error, req, res, next) => {
 };
 
 const validationErrorHandler = (error, req, res, next) => {
-  // console.log("validationErrorHandler");
+  console.log("validationErrorHandler");
   if (error instanceof ValidationError) {
     return handleErrorResponse(res, error, 400, error.errorType);
   }
@@ -52,7 +52,7 @@ const validationErrorHandler = (error, req, res, next) => {
 };
 
 const accessDeniedErrorHandler = (error, req, res, next) => {
-  // console.log("accessDeniedErrorHandler");
+  console.log("accessDeniedErrorHandler");
   if (error instanceof AccessDeniedError) {
     return handleErrorResponse(res, error, 403, error.errorType);
   }
@@ -60,7 +60,7 @@ const accessDeniedErrorHandler = (error, req, res, next) => {
 };
 
 const invalidPathErrorHandler = (error, req, res, next) => {
-  // console.log("invalidPathErrorHandler");
+  console.log("invalidPathErrorHandler");
   if (error instanceof InvalidPathError) {
     return handleErrorResponse(res, error, 404, error.errorType);
   }
@@ -68,7 +68,7 @@ const invalidPathErrorHandler = (error, req, res, next) => {
 };
 
 const schemaValidationErrorHandler = (error, req, res, next) => {
-  // console.log("schemaValidationErrorHandler");
+  console.log("schemaValidationErrorHandler");
   if (error instanceof RequestValidationError) {
     return handleErrorResponse(res, error, 400, error.errorType);
   }
@@ -87,7 +87,7 @@ const schemaValidationErrorHandler = (error, req, res, next) => {
 };
 
 const genericErrorHandler = (error, req, res, next) => {
-  // console.log("genericErrorHandler");
+  console.log("genericErrorHandler");
   res.status(500).send({
     error: {
       message: "Something went wrong with the server",
@@ -98,14 +98,14 @@ const genericErrorHandler = (error, req, res, next) => {
 };
 
 const duplicateKeyErrorHandler = (error) => {
-  // console.log("duplicateKeyErrorHandler");
+  console.log("duplicateKeyErrorHandler");
   const errors = Object.values(error.errors).map((value) => value.message);
   const errorMessages = errors.join(". ");
   return new SchemaValidationError(errorMessages);
 };
 
 const schemaErrorHandler = (error) => {
-  // console.log("schemaErrorHandler");
+  console.log("schemaErrorHandler");
   const errors = Object.values(error.errors).map((value) => value.message);
   const errorMessages = errors.join(". ");
   const errorMessage = `Invalid input data: ${errorMessages}`;

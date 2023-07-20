@@ -4,6 +4,7 @@ const AuthenticationError = require("./authentication-error");
 const AccessDeniedError = require("./access-denied-error");
 const NotFoundError = require("./not-found-error");
 const InvalidPathError = require("./invalid-path-error.js");
+const DataBaseError = require("./database-error.js");
 
 module.exports = {
   AccessDeniedError,
@@ -12,4 +13,5 @@ module.exports = {
   ConflictError,
   NotFoundError,
   InvalidPathError,
+  DataBaseError,
 };

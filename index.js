@@ -10,7 +10,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const { expressApp } = require("./expressApp.js");
-const db = require("./models/index.js");
+const { verifyDBConnection, syncDB } = require("./database");
 
 const app = express();
 const port = 8000;
@@ -23,8 +23,12 @@ const startServer = async () => {
 
     await expressApp(app);
 
+    await verifyDBConnection();
+
+    await syncDB();
+
     app.listen(port, () => {
-      console.log(`Server is running on port: ${port}`);
+      console.log(`🚀 Server is running on port: ${port}`);
     });
   } catch (error) {
     process.on("unhandledRejection", (error) => {
