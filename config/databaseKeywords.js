@@ -1,5 +1,6 @@
 const dotenv = require("dotenv");
 dotenv.config({ path: ".env" });
+console.log(process.env.NODE_ENV);
 
 exports.DATABASE_NAME = process.env.DB_NAME;
 exports.DATABASE_HOST = process.env.DB_HOST;
